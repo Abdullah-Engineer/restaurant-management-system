@@ -1,13 +1,22 @@
 const express = require('express');
+const morgan = require('morgan');
+
 const app = express();
 const port = 5000;
 
 const mongoose = require('mongoose');
+const router = require('./routes/menuRoutes');
+
+app.use(morgan('dev'));
+
+app.use(express.json());
+app.use('/api/menu', router);
+
 
 // For connecting to MongoDB Atlas
 
 // For local MongoDB
-// const uri = 'mongodb://127.0.0.1:27017/';
+const uri = 'mongodb://127.0.0.1:27017/';
 
 const connectDB = async () => {
   try {
