@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 
 const app = express();
-const port = 5000;
+require('dotenv').config();
 
 const mongoose = require('mongoose');
 const router = require('./routes/menuRoutes');
@@ -13,10 +13,8 @@ app.use(express.json());
 app.use('/api/menu', router);
 
 
-// For connecting to MongoDB Atlas
-
-// For local MongoDB
-const uri = 'mongodb://127.0.0.1:27017/';
+const port = process.env.PORT || 5000;
+const uri = process.env.MONGODB_URI;
 
 const connectDB = async () => {
   try {
