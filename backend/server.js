@@ -7,19 +7,19 @@ require('dotenv').config();
 const cors = require('cors');
 
 const mongoose = require('mongoose');
-const router = require('./routes/menuRoutes');
+const menuRouter = require('./routes/menuRoutes');
 const authRouter = require('./routes/auth');
+
+const orderRouter = require('./routes/orderRoutes');
+
 
 app.use(morgan('dev'));
 app.use(cors());
 
 app.use(express.json());
-app.use('/api/menu', router);
+app.use('/api/menu', menuRouter);
 app.use('/api/auth', authRouter);
-
-// const User = require('./models/User');
-// console.log('User model loaded');
-
+app.use('/api/orders', orderRouter);
 
 const port = process.env.PORT || 5000;
 const uri = process.env.MONGODB_URI;
