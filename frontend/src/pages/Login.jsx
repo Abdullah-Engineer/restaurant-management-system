@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -25,7 +26,15 @@ export default function Login() {
 
       const data = await response.json();
       localStorage.setItem('token', data.token);
-      navigate('/admin');
+
+      const decoded = jwtDecode(data.token);
+
+      if (decoded.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/customer');
+      }
+
     } catch (error) {
       alert('Invalid Email or Password');
     }
@@ -35,7 +44,7 @@ export default function Login() {
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="bg-white p-10 rounded-2xl shadow-2xl max-w-md w-full">
         <h2 className="text-3xl font-bold text-center text-indigo-800 mb-8">
-          Admin Login
+          Login to Restaurant
         </h2>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
@@ -73,6 +82,16 @@ export default function Login() {
           >
             Login
           </button>
+
+          <div className="text-center space-y-2">
+            <button
+              type="button"
+              onClick={() => navigate('/register')}
+              className="text-indigo-600 hover:underline block w-full"
+            >
+              Don't have an account? Register
+            </button>
+          </div>
 
           <a href="#" className="block text-center text-sm text-indigo-600 hover:underline">
             Forgot Password?
