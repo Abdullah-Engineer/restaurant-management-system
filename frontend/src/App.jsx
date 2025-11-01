@@ -3,10 +3,16 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import MenuList from "./components/MenuList";
 import AddItemForm from "./components/AddItemForm";
+import OrderList from "./components/OrderList";
 
 export default function App() {
   const [menu, setMenu] = useState([]);
+  const [view, setView] = useState('menu');
+
+  const [orders, setOrders] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
+
+  const [ordersLoading, setOrdersLoading] = useState(false);
 
   const [editName, setEditName] = useState('');
   const [editPrice, setEditPrice] = useState('');
@@ -120,37 +126,120 @@ export default function App() {
   useEffect(() => {
     const token = localStorage.getItem('token');
 
-    if (token && location.pathname === '/') { 
+    if (token && location.pathname === '/') {
       navigate('/admin');
     }
   }, [navigate, location.pathname]);
 
+
+  useEffect(() => {
+    if (view === 'orders') {
+      setOrdersLoading(true);
+      fetch('http://localhost:5000/api/orders')
+        .then(response => response.json())
+        .then(data => setOrders(data))
+        .finally(() => setOrdersLoading(false))
+    }
+  }, [view]);
+
+
+  const updateStatus = async (id, newStatus) => {
+    try {
+      await fetch(`http://localhost:5000/api/orders/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      // Refresh orders
+      const response = await fetch('http://localhost:5000/api/orders');
+      const data = await response.json();
+      setOrders(data);
+    } catch (error) {
+      console.error('Failed to update status:', error);
+    }
+  };
+
+
+  const handleDeleteOrder = async (id) => {
+    await fetch(`http://localhost:5000/api/orders/${id}`, {
+      method: 'DELETE'
+    });
+    fetch('http://localhost:5000/api/orders')
+      .then(response => response.json())
+      .then(data => setOrders(data));
+
+  }
+
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-4xl font-bold text-center text-indigo-800 mb-8">
-        Restaurant Management System
-      </h1>
-
-      <button
-        onClick={handleLogout}
-        className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors float-right"
-      >
-        Log Out
-      </button>
-
-      {loading ? (
-        <div className="flex flex-col items-center justify-center py-16">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600"></div>
-          <p className="mt-6 text-xl font-semibold text-indigo-700">Loading Menu...</p>
-        </div>
-      ) : (
-        <MenuList menu={menu} onDelete={handleDelete} onEdit={handleEdit} />
-      )}
-
-      <div className="mt-12">
-        <AddItemForm onAdd={refreshMenu} />
+      {/* Header Section with Title and Logout */}
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold text-indigo-800">
+          Restaurant Management System
+        </h1>
+        <button
+          onClick={handleLogout}
+          className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+        >
+          Log Out
+        </button>
       </div>
 
+      {/* Navigation Buttons */}
+      <div className="flex gap-4 mb-8">
+        <button
+          onClick={() => setView('menu')}
+          className={`px-6 py-3 rounded-lg font-medium transition-all ${view === 'menu'
+              ? 'bg-indigo-600 text-white shadow-lg'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+        >
+          🍽️ Menu Management
+        </button>
+        <button
+          onClick={() => setView('orders')}
+          className={`px-6 py-3 rounded-lg font-medium transition-all ${view === 'orders'
+              ? 'bg-indigo-600 text-white shadow-lg'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+        >
+          📦 Order Management
+        </button>
+      </div>
+
+      {/* Menu View */}
+      {view === 'menu' && (
+        <>
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600"></div>
+              <p className="mt-6 text-xl font-semibold text-indigo-700">Loading Menu...</p>
+            </div>
+          ) : (
+            <MenuList menu={menu} onDelete={handleDelete} onEdit={handleEdit} />
+          )}
+
+          <div className="mt-12">
+            <AddItemForm onAdd={refreshMenu} />
+          </div>
+        </>
+      )}
+
+      {/* Orders View */}
+      {view === 'orders' && (
+        ordersLoading ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600"></div>
+            <p className="mt-6 text-xl font-semibold text-indigo-700">Loading Orders...</p>
+          </div>
+        ) : (
+          <OrderList orders={orders} updateStatus={updateStatus} deleteOrder={handleDeleteOrder} />
+        )
+      )}
+
+      {/* Edit Form (Modal-like) */}
       {editingItem && (
         <div ref={editFormRef} className="mt-16 bg-white p-8 rounded-2xl shadow-xl max-w-3xl mx-auto border border-gray-100">
           <h2 className="text-3xl font-bold text-center text-indigo-800 mb-8">
