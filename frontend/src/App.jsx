@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import MenuList from "./components/MenuList";
 import AddItemForm from "./components/AddItemForm";
@@ -15,6 +16,8 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const editFormRef = useRef(null);
 
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const refreshMenu = async () => {
     setLoading(true);
@@ -98,9 +101,8 @@ export default function App() {
       });
   };
 
-
   useEffect(() => {
-    if(editingItem && editFormRef.current) {
+    if (editingItem && editFormRef.current) {
       editFormRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'center'
@@ -108,11 +110,33 @@ export default function App() {
     }
   }, [editingItem]);
 
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    // window.location.href = '/';
+    navigate('/');
+  }
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (token && location.pathname === '/') { 
+      navigate('/admin');
+    }
+  }, [navigate, location.pathname]);
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <h1 className="text-4xl font-bold text-center text-indigo-800 mb-8">
         Restaurant Management System
       </h1>
+
+      <button
+        onClick={handleLogout}
+        className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors float-right"
+      >
+        Log Out
+      </button>
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-16">
@@ -135,41 +159,45 @@ export default function App() {
 
           <form className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Item Name</label>
-              <input
-                value={editingItem.name}
-                readOnly
-                className="w-full px-4 py-3 text-lg bg-gray-100 border-2 border-gray-300 rounded-xl cursor-not-allowed"
-              />
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Item Name
+                <input
+                  value={editingItem.name}
+                  readOnly
+                  className="w-full px-4 py-3 text-lg bg-gray-100 border-2 border-gray-300 rounded-xl cursor-not-allowed"
+                />
+              </label>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Price (Rs.)</label>
-                <input
-                  value={editPrice}
-                  onChange={e => setEditPrice(e.target.value)}
-                  className="w-full px-4 py-3 text-lg border-2 border-indigo-500 rounded-xl focus:ring-4 focus:ring-indigo-100"
-                />
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Price (Rs.)
+                  <input
+                    value={editPrice}
+                    onChange={e => setEditPrice(e.target.value)}
+                    className="w-full px-4 py-3 text-lg border-2 border-indigo-500 rounded-xl focus:ring-4 focus:ring-indigo-100"
+                  />
+                </label>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Category</label>
-                <input
-                  value={editCategory}
-                  onChange={e => setEditCategory(e.target.value)}
-                  className="w-full px-4 py-3 text-lg border-2 border-indigo-500 rounded-xl focus:ring-4 focus:ring-indigo-100"
-                />
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Category
+                  <input
+                    value={editCategory}
+                    onChange={e => setEditCategory(e.target.value)}
+                    className="w-full px-4 py-3 text-lg border-2 border-indigo-500 rounded-xl focus:ring-4 focus:ring-indigo-100"
+                  />
+                </label>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-              <textarea
-                value={editDescription}
-                onChange={e => setEditDescription(e.target.value)}
-                rows="3"
-                className="w-full px-4 py-3 text-lg border-2 border-indigo-500 rounded-xl focus:ring-4 focus:ring-indigo-100 resize-none"
-              />
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Description
+                <textarea
+                  value={editDescription}
+                  onChange={e => setEditDescription(e.target.value)}
+                  rows="3"
+                  className="w-full px-4 py-3 text-lg border-2 border-indigo-500 rounded-xl focus:ring-4 focus:ring-indigo-100 resize-none"
+                />
+              </label>
             </div>
 
             <div className="flex gap-4 justify-center">

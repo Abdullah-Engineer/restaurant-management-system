@@ -77,6 +77,7 @@ export default function Login() {
           <a href="#" className="block text-center text-sm text-indigo-600 hover:underline">
             Forgot Password?
           </a>
+
         </form>
       </div>
     </div>
