@@ -8,12 +8,17 @@ const cors = require('cors');
 
 const mongoose = require('mongoose');
 const router = require('./routes/menuRoutes');
+const authRouter = require('./routes/auth');
 
 app.use(morgan('dev'));
 app.use(cors());
 
 app.use(express.json());
 app.use('/api/menu', router);
+app.use('/api/auth', authRouter);
+
+// const User = require('./models/User');
+// console.log('User model loaded');
 
 
 const port = process.env.PORT || 5000;
