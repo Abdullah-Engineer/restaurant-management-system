@@ -5,11 +5,18 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      // Ensure jwt-decode is not externalized (bundled instead)
-      external: [], // Empty array to avoid externalizing dependencies unless needed
+      external: [], // Ensure no unintended externals
     },
   },
   optimizeDeps: {
-    include: ['jwt-decode'], // Pre-optimize jwt-decode to avoid runtime resolution issues
+    include: ['jwt-decode'], // Keep this for jwt-decode
+  },
+  css: {
+    postcss: {
+      plugins: [
+        require('tailwindcss'),
+        require('autoprefixer'),
+      ],
+    },
   },
 });
