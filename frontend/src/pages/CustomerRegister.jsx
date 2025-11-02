@@ -8,6 +8,8 @@ export default function CustomerRegister() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
   const handleRegister = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -17,7 +19,7 @@ export default function CustomerRegister() {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register-customer', {
+      const response = await fetch(`${apiUrl}/auth/register-customer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })

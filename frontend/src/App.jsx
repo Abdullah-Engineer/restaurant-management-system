@@ -22,6 +22,8 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const editFormRef = useRef(null);
 
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,7 +31,8 @@ export default function App() {
     setLoading(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
-      const response = await fetch("http://localhost:5000/api/menu");
+      // const response = await fetch("http://localhost:5000/api/menu");
+      const response = await fetch(`${apiUrl}/menu`);
       const data = await response.json();
       setMenu(data);
     } catch (error) {
@@ -44,7 +47,8 @@ export default function App() {
   }, []);
 
   const handleDelete = (id) => {
-    fetch(`http://localhost:5000/api/menu/${id}`, {
+    // fetch(`http://localhost:5000/api/menu/${id}`, {
+    fetch(`${apiUrl}/menu/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
@@ -78,7 +82,7 @@ export default function App() {
   }, [editingItem]);
 
   const handleSave = () => {
-    fetch(`http://localhost:5000/api/menu/${editingItem._id}`, {
+    fetch(`${apiUrl}/menu/${editingItem._id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -129,7 +133,7 @@ export default function App() {
   useEffect(() => {
     if (view === 'orders') {
       setOrdersLoading(true);
-      fetch('http://localhost:5000/api/orders', {
+      fetch(`${apiUrl}/orders`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       })
         .then(response => response.json())
@@ -140,7 +144,7 @@ export default function App() {
 
   const updateStatus = async (id, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/${id}`, {
+      const response = await fetch(`${apiUrl}/orders/${id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -157,11 +161,11 @@ export default function App() {
   };
 
   const handleDeleteOrder = async (id) => {
-    await fetch(`http://localhost:5000/api/orders/${id}`, {
+    await fetch(`${apiUrl}/orders/${id}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     });
-    fetch('http://localhost:5000/api/orders', {
+    fetch(`${apiUrl}/orders`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
       .then(response => response.json())

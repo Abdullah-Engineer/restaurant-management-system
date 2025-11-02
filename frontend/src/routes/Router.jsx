@@ -13,7 +13,8 @@ export default function Router() {
         <Route path="/register" element={<CustomerRegister />} />
         <Route path="/admin" element={<ProtectedRoute element={<App />} />} />
         <Route path="/customer" element={<ProtectedRoute element={<CustomerDashboard />} />} />
-        <Route path="/dashboard" element={<App />} />
+        {/* <Route path="/dashboard" element={<App />} /> */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   );

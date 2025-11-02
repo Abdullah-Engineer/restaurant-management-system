@@ -24,6 +24,9 @@ app.use('/api/orders', orderRouter);
 const port = process.env.PORT || 5000;
 const uri = process.env.MONGODB_URI;
 
+app.use(express.json({ limit: '1mb' }));
+app.use(cors({ origin: 'https://your-vercel-url.vercel.app' }));
+
 const connectDB = async () => {
   try {
     await mongoose.connect(uri, {

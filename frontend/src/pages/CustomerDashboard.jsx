@@ -9,11 +9,13 @@ export default function CustomerDashboard() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
   useEffect(() => {
     const fetchMenu = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/api/menu');
+        const response = await fetch(`${apiUrl}/menu`);
         if (!response.ok) throw new Error('Failed to fetch menu');
         const data = await response.json();
         setMenu(data);
@@ -32,7 +34,7 @@ export default function CustomerDashboard() {
       const token = localStorage.getItem('token');
       if (token && activeView === 'orders') {
         try {
-          const response = await fetch('http://localhost:5000/api/orders/user', {
+          const response = await fetch(`${apiUrl}/orders/user`, {
             headers: { 'Authorization': `Bearer ${token}` }
           });
           if (!response.ok) throw new Error('Failed to fetch orders');
@@ -99,7 +101,7 @@ export default function CustomerDashboard() {
       return;
     }
     try {
-      const response = await fetch('http://localhost:5000/api/orders', {
+      const response = await fetch(`${apiUrl}/orders`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

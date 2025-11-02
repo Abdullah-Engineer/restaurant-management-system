@@ -7,7 +7,10 @@ export default function AddItemForm({ onAdd }) {
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const url = 'http://localhost:5000/api/menu';
+  //const url = 'http://localhost:5000/api/menu';
+
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -20,7 +23,7 @@ export default function AddItemForm({ onAdd }) {
       description
     };
 
-    fetch(url, {
+    fetch(`${apiUrl}/menu`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
