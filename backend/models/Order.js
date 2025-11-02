@@ -2,17 +2,16 @@ const mongoose = require('mongoose');
 
 const OrderSchema = new mongoose.Schema({
   userId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId, // Changed to ObjectId for MongoDB ref
+    ref: 'User',
     required: true
   },
-  menuId: {
-    type: String,
-    required: true
-  },
-  quantity: {
-    type: Number,
-    default: 1
-  },
+  items: [{
+    menuId: { type: mongoose.Schema.Types.ObjectId, ref: 'Menu', required: true },
+    name: { type: String, required: true },
+    price: { type: Number, required: true },
+    quantity: { type: Number, default: 1 }
+  }],
   status: {
     type: String,
     default: 'pending',
@@ -22,7 +21,6 @@ const OrderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-
 });
 
 module.exports = mongoose.model('Order', OrderSchema);

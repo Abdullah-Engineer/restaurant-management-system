@@ -28,14 +28,12 @@ export default function App() {
   const refreshMenu = async () => {
     setLoading(true);
     try {
-
       await new Promise(resolve => setTimeout(resolve, 2000));
-
       const response = await fetch("http://localhost:5000/api/menu");
       const data = await response.json();
       setMenu(data);
     } catch (error) {
-      console.error("Error: ", error)
+      console.error("Error: ", error);
     } finally {
       setLoading(false);
     }
@@ -68,7 +66,7 @@ export default function App() {
 
   const handleEdit = (item) => {
     setEditingItem(item);
-  }
+  };
 
   useEffect(() => {
     if (editingItem) {
@@ -116,61 +114,59 @@ export default function App() {
     }
   }, [editingItem]);
 
-
   const handleLogout = () => {
     localStorage.removeItem('token');
-    // window.location.href = '/';
     navigate('/');
-  }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-
     if (token && location.pathname === '/') {
       navigate('/admin');
     }
   }, [navigate, location.pathname]);
 
-
   useEffect(() => {
     if (view === 'orders') {
       setOrdersLoading(true);
-      fetch('http://localhost:5000/api/orders')
+      fetch('http://localhost:5000/api/orders', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      })
         .then(response => response.json())
         .then(data => setOrders(data))
-        .finally(() => setOrdersLoading(false))
+        .finally(() => setOrdersLoading(false));
     }
   }, [view]);
 
-
   const updateStatus = async (id, newStatus) => {
     try {
-      await fetch(`http://localhost:5000/api/orders/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/orders/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ status: newStatus })
       });
-
-      // Refresh orders
-      const response = await fetch('http://localhost:5000/api/orders');
+      if (!response.ok) throw new Error('Failed to update status');
       const data = await response.json();
-      setOrders(data);
+      setOrders(orders.map(order => order._id === id ? data : order));
     } catch (error) {
       console.error('Failed to update status:', error);
     }
   };
 
-
   const handleDeleteOrder = async (id) => {
     await fetch(`http://localhost:5000/api/orders/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     });
-    fetch('http://localhost:5000/api/orders')
+    fetch('http://localhost:5000/api/orders', {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    })
       .then(response => response.json())
       .then(data => setOrders(data));
-
-  }
-
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">

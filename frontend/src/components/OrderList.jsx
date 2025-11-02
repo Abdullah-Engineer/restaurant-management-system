@@ -58,16 +58,17 @@ export default function OrderList({ orders, updateStatus, deleteOrder }) {
                       <p className="text-sm font-medium text-gray-900">
                         User: {order.userId}
                       </p>
-                      <p className="text-sm text-gray-500">
-                        Menu ID: {order.menuId}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Qty: {order.quantity}
-                      </p>
+                      <ul className="text-sm text-gray-500 mt-1">
+                        {order.items.map((item, index) => (
+                          <li key={index}>
+                            {item.name} (Qty: {item.quantity}, Rs. {item.price * item.quantity})
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </td>
-                
+
                 <td className="px-6 py-4">
                   <select
                     value={order.status}
@@ -80,7 +81,7 @@ export default function OrderList({ orders, updateStatus, deleteOrder }) {
                     <option value="delivered">📦 Delivered</option>
                   </select>
                 </td>
-                
+
                 <td className="px-6 py-4">
                   <div className="text-sm text-gray-900">
                     {new Date(order.timestamp).toLocaleDateString()}
@@ -89,7 +90,7 @@ export default function OrderList({ orders, updateStatus, deleteOrder }) {
                     {new Date(order.timestamp).toLocaleTimeString()}
                   </div>
                 </td>
-                
+
                 <td className="px-6 py-4">
                   <button
                     onClick={() => deleteOrder(order._id)}
@@ -105,7 +106,7 @@ export default function OrderList({ orders, updateStatus, deleteOrder }) {
             ))}
           </tbody>
         </table>
-        
+
         {orders.length === 0 && (
           <div className="text-center py-12">
             <div className="text-gray-400 text-6xl mb-4">📦</div>
