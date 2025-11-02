@@ -192,8 +192,8 @@ export default function App() {
         <button
           onClick={() => setView('menu')}
           className={`px-6 py-3 rounded-lg font-medium transition-all ${view === 'menu'
-              ? 'bg-indigo-600 text-white shadow-lg'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            ? 'bg-indigo-600 text-white shadow-lg'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
         >
           🍽️ Menu Management
@@ -201,8 +201,8 @@ export default function App() {
         <button
           onClick={() => setView('orders')}
           className={`px-6 py-3 rounded-lg font-medium transition-all ${view === 'orders'
-              ? 'bg-indigo-600 text-white shadow-lg'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            ? 'bg-indigo-600 text-white shadow-lg'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
         >
           📦 Order Management

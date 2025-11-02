@@ -1,10 +1,9 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-
-import Login from '../pages/login.jsx';
+import Login from '../pages/Login.jsx';
 import App from '../App.jsx';
 import CustomerRegister from '../pages/CustomerRegister.jsx';
+import CustomerDashboard from '../pages/CustomerDashboard.jsx';
 
 export default function Router() {
   return (
@@ -13,8 +12,8 @@ export default function Router() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<CustomerRegister />} />
         <Route path="/admin" element={<ProtectedRoute element={<App />} />} />
-        <Route path="/customer" element={<div>Customer Dashboard - Coming Soon!</div>} />
-        <Route path='/dashboard' element={<App />} />
+        <Route path="/customer" element={<ProtectedRoute element={<CustomerDashboard />} />} />
+        <Route path="/dashboard" element={<App />} />
       </Routes>
     </BrowserRouter>
   );
