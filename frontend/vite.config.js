@@ -8,6 +8,7 @@ export default defineConfig({
       external: [], // Ensure no unintended externals
     },
   },
+  base: process.env.VITE_BASE_PATH || "/restaurant-management-system/frontend",
   optimizeDeps: {
     include: ['jwt-decode'], // Keep this for jwt-decode
   },
