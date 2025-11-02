@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Login from '../pages/Login.jsx';
 import App from '../App.jsx';
@@ -13,7 +13,6 @@ export default function Router() {
         <Route path="/register" element={<CustomerRegister />} />
         <Route path="/admin" element={<ProtectedRoute element={<App />} />} />
         <Route path="/customer" element={<ProtectedRoute element={<CustomerDashboard />} />} />
-        {/* <Route path="/dashboard" element={<App />} /> */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
